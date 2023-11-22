@@ -40,6 +40,8 @@ import org.w3c.dom.Document;
  */
 public class PackageSourcePageTest extends PageTestBase {
 
+	private static final String TEST_METHOD = "foo";
+
 	private PackageCoverageImpl node;
 	private ISourceFileLocator sourceLocator;
 	private ILinkable packagePageLink;
@@ -52,10 +54,12 @@ public class PackageSourcePageTest extends PageTestBase {
 		super.setup();
 		SourceFileCoverageImpl src1 = new SourceFileCoverageImpl("Src1.java",
 				"org/jacoco/example");
-		src1.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1);
+		src1.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1,
+				TEST_METHOD);
 		SourceFileCoverageImpl src2 = new SourceFileCoverageImpl("Src2.java",
 				"org/jacoco/example");
-		src2.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1);
+		src2.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1,
+				TEST_METHOD);
 		node = new PackageCoverageImpl("org/jacoco/example",
 				Collections.<IClassCoverage> emptyList(),
 				Arrays.<ISourceFileCoverage> asList(src1, src2));
@@ -119,7 +123,7 @@ public class PackageSourcePageTest extends PageTestBase {
 		final SourceFileCoverageImpl nonEmptySource = new SourceFileCoverageImpl(
 				"NonEmpty.java", "example");
 		nonEmptySource.increment(CounterImpl.COUNTER_1_0,
-				CounterImpl.COUNTER_0_0, 1);
+				CounterImpl.COUNTER_0_0, 1, TEST_METHOD);
 		node = new PackageCoverageImpl("example",
 				Collections.<IClassCoverage> emptyList(),
 				Arrays.asList(emptySource, nonEmptySource));

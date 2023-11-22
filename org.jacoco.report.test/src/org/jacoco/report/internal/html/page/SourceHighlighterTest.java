@@ -33,6 +33,8 @@ import org.w3c.dom.Document;
  */
 public class SourceHighlighterTest {
 
+	private static final String TEST_METHOD = "foo";
+
 	private HTMLSupport htmlSupport;
 
 	private ByteArrayOutputStream buffer;
@@ -86,10 +88,14 @@ public class SourceHighlighterTest {
 	@Test
 	public void testHighlighting() throws Exception {
 		final String src = "A\nB\nC\nD";
-		source.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1);
-		source.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 2);
-		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.COUNTER_0_0, 2);
-		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.COUNTER_0_0, 3);
+		source.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1,
+				TEST_METHOD);
+		source.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 2,
+				TEST_METHOD);
+		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.COUNTER_0_0, 2,
+				TEST_METHOD);
+		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.COUNTER_0_0, 3,
+				TEST_METHOD);
 		sourceHighlighter.render(parent, source, new StringReader(src));
 		final Document doc = parseDoc();
 		assertEquals(Styles.NOT_COVERED,
@@ -112,7 +118,7 @@ public class SourceHighlighterTest {
 	@Test
 	public void testHighlightBranchesFC() throws Exception {
 		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.getInstance(0, 5),
-				1);
+				1, TEST_METHOD);
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("fc bfc", htmlSupport.findStr(doc, "//pre/span/@class"));
@@ -123,7 +129,7 @@ public class SourceHighlighterTest {
 	@Test
 	public void testHighlightBranchesPC() throws Exception {
 		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.getInstance(2, 3),
-				1);
+				1, TEST_METHOD);
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("pc bpc", htmlSupport.findStr(doc, "//pre/span/@class"));
@@ -134,7 +140,7 @@ public class SourceHighlighterTest {
 	@Test
 	public void testHighlightBranchesNC() throws Exception {
 		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.getInstance(5, 0),
-				1);
+				1, TEST_METHOD);
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("pc bnc", htmlSupport.findStr(doc, "//pre/span/@class"));

@@ -65,7 +65,7 @@ class MethodCoverageCalculator implements IFilterOutput {
 	 * @param coverage
 	 *            the result is added to this coverage node
 	 */
-	void calculate(final MethodCoverageImpl coverage) {
+	void calculate(final MethodCoverageImpl coverage, final String testMethod) {
 		applyMerges();
 		applyReplacements();
 		ensureCapacity(coverage);
@@ -75,7 +75,8 @@ class MethodCoverageCalculator implements IFilterOutput {
 			if (!ignored.contains(entry.getKey())) {
 				final Instruction instruction = entry.getValue();
 				coverage.increment(instruction.getInstructionCounter(),
-						instruction.getBranchCounter(), instruction.getLine());
+						instruction.getBranchCounter(), instruction.getLine(),
+						testMethod);
 			}
 		}
 

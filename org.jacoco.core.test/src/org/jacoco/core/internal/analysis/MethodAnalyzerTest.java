@@ -953,13 +953,13 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 				analyzer, this);
 		// note that CheckMethodAdapter verifies that this test does not violate
 		// contracts of ASM API
-		analyzer.accept(method, new CheckMethodAdapter(probesAdapter));
+		analyzer.accept(method, new CheckMethodAdapter(probesAdapter), "foo");
 
 		MethodCoverageImpl mc = new MethodCoverageImpl("doit", "V()", null);
 		MethodCoverageCalculator mcc = new MethodCoverageCalculator(
 				builder.getInstructions());
 		filter.filter(method, new FilterContextMock(), mcc);
-		mcc.calculate(mc);
+		mcc.calculate(mc, "foo");
 		result = mc;
 	}
 

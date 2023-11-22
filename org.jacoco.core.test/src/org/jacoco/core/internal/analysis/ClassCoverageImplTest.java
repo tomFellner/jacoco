@@ -117,7 +117,7 @@ public class ClassCoverageImplTest {
 		final MethodCoverageImpl m = new MethodCoverageImpl("sample", "()V",
 				null);
 		m.increment(covered ? CounterImpl.COUNTER_0_1 : CounterImpl.COUNTER_1_0,
-				CounterImpl.COUNTER_0_0, ISourceNode.UNKNOWN_LINE);
+				CounterImpl.COUNTER_0_0, ISourceNode.UNKNOWN_LINE, "foo");
 		m.incrementMethodCounter();
 		return m;
 	}

@@ -39,11 +39,14 @@ public class MethodCoverageCalculatorTest {
 
 	private MethodCoverageImpl coverage;
 
+	private String testMethod;
+
 	@Before
 	public void setup() {
 		instructions = new HashMap<AbstractInsnNode, Instruction>();
 		coverage = new MethodCoverageImpl("run", "()V", null);
 		list = new InsnList();
+		testMethod = "foo";
 	}
 
 	@Test
@@ -54,7 +57,7 @@ public class MethodCoverageCalculatorTest {
 		addInsn(3, false);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 0, 1, 0, 0);
 		assertLine(2, 1, 1, 0, 0);
@@ -68,7 +71,7 @@ public class MethodCoverageCalculatorTest {
 		addInsn(3, false, true, true);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 1, 0, 2, 0);
 		assertLine(2, 0, 1, 2, 1);
@@ -83,7 +86,7 @@ public class MethodCoverageCalculatorTest {
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.ignore(i1, i1);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 0, 1, 0, 0); // only one instruction not filtered
 		assertLine(2, 0, 1, 0, 0);
@@ -101,7 +104,7 @@ public class MethodCoverageCalculatorTest {
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.ignore(i1, i2);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 0, 1, 0, 0);
 		assertLine(2, 0, 0, 0, 0); // all instructions filtered in line 2
@@ -117,7 +120,7 @@ public class MethodCoverageCalculatorTest {
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.ignore(i1, i1);
 		c.ignore(i3, i3);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertEquals(2, coverage.getFirstLine());
 		assertEquals(2, coverage.getLastLine());
@@ -132,7 +135,7 @@ public class MethodCoverageCalculatorTest {
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.merge(i1, i2);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 0, 1, 0, 0);
 		assertLine(2, 0, 1, 0, 2); // one fully covered instruction left
@@ -148,7 +151,7 @@ public class MethodCoverageCalculatorTest {
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.merge(i1, i2);
 		c.merge(i2, i3);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 0, 1, 0, 3); // one fully covered instruction left
 	}
@@ -163,7 +166,7 @@ public class MethodCoverageCalculatorTest {
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.merge(i1, i2);
 		c.merge(i2, i1);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 0, 1, 0, 0);
 		assertLine(2, 0, 1, 0, 2); // one fully covered instruction left
@@ -180,7 +183,7 @@ public class MethodCoverageCalculatorTest {
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.replaceBranches(i1,
 				new HashSet<AbstractInsnNode>(Arrays.asList(i2, i3, i4)));
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 0, 1, 1, 2); // branches coverage status replaced
 		assertLine(2, 1, 2, 0, 0); // still in place
@@ -198,7 +201,7 @@ public class MethodCoverageCalculatorTest {
 		c.merge(i3, i2);
 		c.replaceBranches(i1,
 				new HashSet<AbstractInsnNode>(Arrays.asList(i2, i3, i4)));
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertLine(1, 0, 1, 0, 3);
 	}
@@ -210,7 +213,7 @@ public class MethodCoverageCalculatorTest {
 		addInsn(ISourceNode.UNKNOWN_LINE, true);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
-		c.calculate(coverage);
+		c.calculate(coverage, testMethod);
 
 		assertEquals(ISourceNode.UNKNOWN_LINE, coverage.getFirstLine());
 		assertEquals(ISourceNode.UNKNOWN_LINE, coverage.getLastLine());

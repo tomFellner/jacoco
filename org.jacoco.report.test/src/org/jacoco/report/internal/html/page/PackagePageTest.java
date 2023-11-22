@@ -37,6 +37,8 @@ import org.w3c.dom.Document;
  */
 public class PackagePageTest extends PageTestBase {
 
+	private static final String TEST_METHOD = "foo";
+
 	private IPackageCoverage node;
 	private ISourceFileLocator sourceLocator;
 
@@ -66,7 +68,7 @@ public class PackagePageTest extends PageTestBase {
 		final MethodCoverageImpl nonEmptyMethod = new MethodCoverageImpl("m",
 				"()V", null);
 		nonEmptyMethod.increment(CounterImpl.COUNTER_1_0,
-				CounterImpl.COUNTER_0_0, 42);
+				CounterImpl.COUNTER_0_0, 42, TEST_METHOD);
 		nonEmptyClass.addMethod(nonEmptyMethod);
 		final ClassCoverageImpl emptyClass = new ClassCoverageImpl(
 				"example/EmptyClass", 0, false);
@@ -90,12 +92,14 @@ public class PackagePageTest extends PageTestBase {
 		ClassCoverageImpl class1 = new ClassCoverageImpl(
 				"org/jacoco/example/Foo1", 0x1000, false);
 		MethodCoverageImpl method1 = new MethodCoverageImpl("m", "()V", null);
-		method1.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42);
+		method1.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42,
+				TEST_METHOD);
 		class1.addMethod(method1);
 		ClassCoverageImpl class2 = new ClassCoverageImpl(
 				"org/jacoco/example/Foo2", 0x2000, false);
 		MethodCoverageImpl method2 = new MethodCoverageImpl("m", "()V", null);
-		method2.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42);
+		method2.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42,
+				TEST_METHOD);
 		class2.addMethod(method2);
 		ISourceFileCoverage src1 = new SourceFileCoverageImpl("Src1.java",
 				"org/jacoco/example");
@@ -132,12 +136,14 @@ public class PackagePageTest extends PageTestBase {
 		ClassCoverageImpl class1 = new ClassCoverageImpl(
 				"org/jacoco/example/Foo1", 0x1000, false);
 		MethodCoverageImpl method1 = new MethodCoverageImpl("m", "()V", null);
-		method1.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42);
+		method1.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42,
+				TEST_METHOD);
 		class1.addMethod(method1);
 		ClassCoverageImpl class2 = new ClassCoverageImpl(
 				"org/jacoco/example/Foo2", 0x2000, false);
 		MethodCoverageImpl method2 = new MethodCoverageImpl("m", "()V", null);
-		method2.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42);
+		method2.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42,
+				TEST_METHOD);
 		class2.addMethod(method2);
 		node = new PackageCoverageImpl("org/jacoco/example",
 				Arrays.<IClassCoverage> asList(class1, class2),

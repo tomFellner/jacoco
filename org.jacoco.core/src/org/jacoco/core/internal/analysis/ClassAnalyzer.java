@@ -103,24 +103,26 @@ public class ClassAnalyzer extends ClassProbesVisitor
 
 			@Override
 			public void accept(final MethodNode methodNode,
-					final MethodVisitor methodVisitor) {
-				super.accept(methodNode, methodVisitor);
+					final MethodVisitor methodVisitor,
+					final String testMethod) {
+				super.accept(methodNode, methodVisitor, testMethod);
 				addMethodCoverage(stringPool.get(name), stringPool.get(desc),
-						stringPool.get(signature), builder, methodNode);
+						stringPool.get(signature), builder, methodNode,
+						testMethod);
 			}
 		};
 	}
 
 	private void addMethodCoverage(final String name, final String desc,
 			final String signature, final InstructionsBuilder icc,
-			final MethodNode methodNode) {
+			final MethodNode methodNode, final String testMethod) {
 		final MethodCoverageCalculator mcc = new MethodCoverageCalculator(
 				icc.getInstructions());
 		filter.filter(methodNode, this, mcc);
 
 		final MethodCoverageImpl mc = new MethodCoverageImpl(name, desc,
 				signature);
-		mcc.calculate(mc);
+		mcc.calculate(mc, testMethod);
 
 		if (mc.containsCode()) {
 			// Only consider methods that actually contain code

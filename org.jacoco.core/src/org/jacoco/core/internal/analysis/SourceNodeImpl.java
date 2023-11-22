@@ -17,6 +17,8 @@ import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.ILine;
 import org.jacoco.core.analysis.ISourceNode;
 
+import java.util.Set;
+
 /**
  * Implementation of {@link ISourceNode}.
  */
@@ -80,7 +82,7 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 	 * @param child
 	 *            child node to add
 	 */
-	public void increment(final ISourceNode child) {
+	public void increment(final ISourceNode child, final String testMethod) {
 		instructionCounter = instructionCounter
 				.increment(child.getInstructionCounter());
 		branchCounter = branchCounter.increment(child.getBranchCounter());
@@ -95,7 +97,7 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 			for (int i = firstLine; i <= lastLine; i++) {
 				final ILine line = child.getLine(i);
 				incrementLine(line.getInstructionCounter(),
-						line.getBranchCounter(), i);
+						line.getBranchCounter(), i, testMethod);
 			}
 		}
 	}
@@ -113,21 +115,23 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 	 *            optional line number or {@link ISourceNode#UNKNOWN_LINE}
 	 */
 	public void increment(final ICounter instructions, final ICounter branches,
-			final int line) {
+			final int line, final String testMethod) {
 		if (line != UNKNOWN_LINE) {
-			incrementLine(instructions, branches, line);
+			incrementLine(instructions, branches, line, testMethod);
 		}
 		instructionCounter = instructionCounter.increment(instructions);
 		branchCounter = branchCounter.increment(branches);
 	}
 
 	private void incrementLine(final ICounter instructions,
-			final ICounter branches, final int line) {
+			final ICounter branches, final int line, final String testMethod) {
 		ensureCapacity(line, line);
 		final LineImpl l = getLine(line);
 		final int oldTotal = l.getInstructionCounter().getTotalCount();
 		final int oldCovered = l.getInstructionCounter().getCoveredCount();
-		lines[line - offset] = l.increment(instructions, branches);
+		final Set<String> testMethods = l.getTestMethods();
+		testMethods.add(testMethod);
+		lines[line - offset] = l.increment(instructions, branches, testMethods);
 
 		// Increment line counter:
 		if (instructions.getTotalCount() > 0) {

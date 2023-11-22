@@ -15,6 +15,9 @@ package org.jacoco.core.internal.analysis;
 import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.ILine;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Implementation of {@link ILine}.
  */
@@ -37,7 +40,8 @@ public abstract class LineImpl implements ILine {
 				for (int k = 0; k <= SINGLETON_BRA_LIMIT; k++) {
 					SINGLETONS[i][j][k] = new LineImpl[SINGLETON_BRA_LIMIT + 1];
 					for (int l = 0; l <= SINGLETON_BRA_LIMIT; l++) {
-						SINGLETONS[i][j][k][l] = new Fix(i, j, k, l);
+						SINGLETONS[i][j][k][l] = new Fix(i, j, k, l,
+								new HashSet<String>());
 					}
 				}
 			}
@@ -50,7 +54,7 @@ public abstract class LineImpl implements ILine {
 	public static final LineImpl EMPTY = SINGLETONS[0][0][0][0];
 
 	private static LineImpl getInstance(final CounterImpl instructions,
-			final CounterImpl branches) {
+			final CounterImpl branches, final Set<String> testMethods) {
 		final int im = instructions.getMissedCount();
 		final int ic = instructions.getCoveredCount();
 		final int bm = branches.getMissedCount();
@@ -59,22 +63,24 @@ public abstract class LineImpl implements ILine {
 				&& bm <= SINGLETON_BRA_LIMIT && bc <= SINGLETON_BRA_LIMIT) {
 			return SINGLETONS[im][ic][bm][bc];
 		}
-		return new Var(instructions, branches);
+		return new Var(instructions, branches, testMethods);
 	}
 
 	/**
 	 * Mutable version.
 	 */
 	private static final class Var extends LineImpl {
-		Var(final CounterImpl instructions, final CounterImpl branches) {
-			super(instructions, branches);
+		Var(final CounterImpl instructions, final CounterImpl branches,
+				final Set<String> testMethods) {
+			super(instructions, branches, testMethods);
 		}
 
 		@Override
 		public LineImpl increment(final ICounter instructions,
-				final ICounter branches) {
+				final ICounter branches, final Set<String> testMethods) {
 			this.instructions = this.instructions.increment(instructions);
 			this.branches = this.branches.increment(branches);
+			this.testMethods = testMethods;
 			return this;
 		}
 	}
@@ -83,16 +89,17 @@ public abstract class LineImpl implements ILine {
 	 * Immutable version.
 	 */
 	private static final class Fix extends LineImpl {
-		public Fix(final int im, final int ic, final int bm, final int bc) {
+		public Fix(final int im, final int ic, final int bm, final int bc,
+				final Set<String> testMethods) {
 			super(CounterImpl.getInstance(im, ic),
-					CounterImpl.getInstance(bm, bc));
+					CounterImpl.getInstance(bm, bc), testMethods);
 		}
 
 		@Override
 		public LineImpl increment(final ICounter instructions,
-				final ICounter branches) {
+				final ICounter branches, final Set<String> testMethods) {
 			return getInstance(this.instructions.increment(instructions),
-					this.branches.increment(branches));
+					this.branches.increment(branches), testMethods);
 		}
 	}
 
@@ -102,10 +109,13 @@ public abstract class LineImpl implements ILine {
 	/** branch counter */
 	protected CounterImpl branches;
 
-	private LineImpl(final CounterImpl instructions,
-			final CounterImpl branches) {
+	protected Set<String> testMethods;
+
+	private LineImpl(final CounterImpl instructions, final CounterImpl branches,
+			final Set<String> testMethods) {
 		this.instructions = instructions;
 		this.branches = branches;
+		this.testMethods = testMethods;
 	}
 
 	/**
@@ -118,7 +128,7 @@ public abstract class LineImpl implements ILine {
 	 * @return instance with new counter values
 	 */
 	public abstract LineImpl increment(final ICounter instructions,
-			final ICounter branches);
+			final ICounter branches, final Set<String> testMethods);
 
 	// === ILine implementation ===
 
@@ -149,4 +159,7 @@ public abstract class LineImpl implements ILine {
 		return false;
 	}
 
+	public Set<String> getTestMethods() {
+		return testMethods;
+	}
 }

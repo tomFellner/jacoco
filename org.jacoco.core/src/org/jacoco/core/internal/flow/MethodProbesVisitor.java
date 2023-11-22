@@ -23,6 +23,8 @@ import org.objectweb.asm.tree.MethodNode;
  */
 public abstract class MethodProbesVisitor extends MethodVisitor {
 
+	private String testMethod;
+
 	/**
 	 * New visitor instance without delegate visitor.
 	 */
@@ -161,8 +163,13 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            calculates the probes.
 	 */
 	public void accept(final MethodNode methodNode,
-			final MethodVisitor methodVisitor) {
+			final MethodVisitor methodVisitor, String testMethod) {
+		this.testMethod = testMethod;
 		methodNode.accept(methodVisitor);
+	}
+
+	public String getTestMethod() {
+		return testMethod;
 	}
 
 }

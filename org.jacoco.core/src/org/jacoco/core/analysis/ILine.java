@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.jacoco.core.analysis;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * The instruction and branch coverage of a single source line is described by
  * this interface.
@@ -45,4 +48,5 @@ public interface ILine {
 	 */
 	int getStatus();
 
+	Set<String> getTestMethods();
 }

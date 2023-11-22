@@ -69,10 +69,13 @@ public class ReportStructureTestDriver {
 	public ReportStructureTestDriver() {
 		final MethodCoverageImpl m = new MethodCoverageImpl("fooMethod", "()V",
 				null);
-		m.increment(CounterImpl.getInstance(3, 5), CounterImpl.COUNTER_0_0, 1);
+		final String testMethod = "foo";
+		m.increment(CounterImpl.getInstance(3, 5), CounterImpl.COUNTER_0_0, 1,
+				testMethod);
 		m.increment(CounterImpl.getInstance(3, 5),
-				CounterImpl.getInstance(1, 2), 2);
-		m.increment(CounterImpl.getInstance(4, 5), CounterImpl.COUNTER_0_0, 4);
+				CounterImpl.getInstance(1, 2), 2, testMethod);
+		m.increment(CounterImpl.getInstance(4, 5), CounterImpl.COUNTER_0_0, 4,
+				testMethod);
 		m.incrementMethodCounter();
 		methodCoverage = m;
 

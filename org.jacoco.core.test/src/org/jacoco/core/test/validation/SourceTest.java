@@ -101,11 +101,15 @@ public class SourceTest {
 	@Test
 	public void line_should_provide_corresponding_coverage()
 			throws IOException {
+		final String testMethod = "foo";
 		String src = "a\nb\nc";
 		SourceFileCoverageImpl sc = new SourceFileCoverageImpl("Foo", "foo");
-		sc.increment(CounterImpl.getInstance(1, 0), CounterImpl.COUNTER_0_0, 1);
-		sc.increment(CounterImpl.getInstance(2, 0), CounterImpl.COUNTER_0_0, 2);
-		sc.increment(CounterImpl.getInstance(3, 0), CounterImpl.COUNTER_0_0, 3);
+		sc.increment(CounterImpl.getInstance(1, 0), CounterImpl.COUNTER_0_0, 1,
+				testMethod);
+		sc.increment(CounterImpl.getInstance(2, 0), CounterImpl.COUNTER_0_0, 2,
+				testMethod);
+		sc.increment(CounterImpl.getInstance(3, 0), CounterImpl.COUNTER_0_0, 3,
+				testMethod);
 
 		final Source s = new Source(new StringReader(src), sc);
 

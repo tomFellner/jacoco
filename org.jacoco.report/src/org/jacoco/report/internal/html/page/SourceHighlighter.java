@@ -15,7 +15,7 @@ package org.jacoco.report.internal.html.page;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Locale;
+import java.util.*;
 
 import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.ILine;
@@ -104,16 +104,17 @@ final class SourceHighlighter {
 
 		final String lineId = "L" + Integer.toString(lineNr);
 		final ICounter branches = line.getBranchCounter();
+		final Set<String> testMethods = line.getTestMethods();
 		switch (branches.getStatus()) {
 		case ICounter.NOT_COVERED:
 			return span(pre, lineId, style, Styles.BRANCH_NOT_COVERED,
-					"All %2$d branches missed.", branches);
+					"All %2$d branches missed.", branches, testMethods);
 		case ICounter.FULLY_COVERED:
 			return span(pre, lineId, style, Styles.BRANCH_FULLY_COVERED,
-					"All %2$d branches covered.", branches);
+					"All %2$d branches covered.", branches, testMethods);
 		case ICounter.PARTLY_COVERED:
 			return span(pre, lineId, style, Styles.BRANCH_PARTLY_COVERED,
-					"%1$d of %2$d branches missed.", branches);
+					"%1$d of %2$d branches missed.", branches, testMethods);
 		default:
 			return pre.span(style, lineId);
 		}
@@ -121,11 +122,18 @@ final class SourceHighlighter {
 
 	private HTMLElement span(final HTMLElement parent, final String id,
 			final String style1, final String style2, final String title,
-			final ICounter branches) throws IOException {
+			final ICounter branches, final Set<String> testMethods)
+			throws IOException {
+		StringBuilder builder = new StringBuilder();
+		for (String testMethod : testMethods) {
+			builder.append(";").append(testMethod);
+		}
+		builder.delete(0, 1);
 		final HTMLElement span = parent.span(style1 + " " + style2, id);
 		final Integer missed = Integer.valueOf(branches.getMissedCount());
 		final Integer total = Integer.valueOf(branches.getTotalCount());
 		span.attr("title", String.format(locale, title, missed, total));
+		span.attr("test-methods", builder.toString());
 		return span;
 	}
 

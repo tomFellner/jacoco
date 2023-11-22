@@ -16,6 +16,7 @@ import org.jacoco.core.internal.instr.InstrSupport;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.AnalyzerAdapter;
+import org.objectweb.asm.tree.MethodNode;
 
 /**
  * A {@link org.objectweb.asm.ClassVisitor} that calculates probes for every
@@ -81,14 +82,15 @@ public class ClassProbesAdapter extends ClassVisitor
 				LabelFlowAnalyzer.markLabels(this);
 				final MethodProbesAdapter probesAdapter = new MethodProbesAdapter(
 						methodProbes, ClassProbesAdapter.this);
+				String testMethod = methodProbes.getTestMethod();
 				if (trackFrames) {
 					final AnalyzerAdapter analyzer = new AnalyzerAdapter(
 							ClassProbesAdapter.this.name, access, name, desc,
 							probesAdapter);
 					probesAdapter.setAnalyzer(analyzer);
-					methodProbes.accept(this, analyzer);
+					methodProbes.accept(this, analyzer, testMethod);
 				} else {
-					methodProbes.accept(this, probesAdapter);
+					methodProbes.accept(this, probesAdapter, testMethod);
 				}
 			}
 		};

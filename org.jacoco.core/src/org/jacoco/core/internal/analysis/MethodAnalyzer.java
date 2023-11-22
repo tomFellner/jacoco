@@ -42,7 +42,7 @@ public class MethodAnalyzer extends MethodProbesVisitor {
 
 	@Override
 	public void accept(final MethodNode methodNode,
-			final MethodVisitor methodVisitor) {
+			final MethodVisitor methodVisitor, final String testMethod) {
 		methodVisitor.visitCode();
 		for (final TryCatchBlockNode n : methodNode.tryCatchBlocks) {
 			n.accept(methodVisitor);

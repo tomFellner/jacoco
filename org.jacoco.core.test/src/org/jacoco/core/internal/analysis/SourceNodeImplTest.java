@@ -23,6 +23,8 @@ import org.junit.Test;
  */
 public class SourceNodeImplTest {
 
+	private static final String TEST_METHOD = "foo";
+
 	@Test
 	public void testInit() {
 		final SourceNodeImpl node = new SourceNodeImpl(ElementType.CLASS,
@@ -65,7 +67,8 @@ public class SourceNodeImplTest {
 		final SourceNodeImpl node = new SourceNodeImpl(ElementType.CLASS,
 				"Foo");
 		node.increment(CounterImpl.getInstance(1, 2),
-				CounterImpl.getInstance(3, 4), ISourceNode.UNKNOWN_LINE);
+				CounterImpl.getInstance(3, 4), ISourceNode.UNKNOWN_LINE,
+				TEST_METHOD);
 		assertEquals(CounterImpl.getInstance(1, 2),
 				node.getInstructionCounter());
 		assertEquals(CounterImpl.getInstance(3, 4), node.getBranchCounter());
@@ -77,9 +80,9 @@ public class SourceNodeImplTest {
 		final SourceNodeImpl node = new SourceNodeImpl(ElementType.CLASS,
 				"Foo");
 		node.increment(CounterImpl.getInstance(1, 1), CounterImpl.COUNTER_0_0,
-				10);
+				10, TEST_METHOD);
 		node.increment(CounterImpl.getInstance(2, 2), CounterImpl.COUNTER_0_0,
-				12);
+				12, TEST_METHOD);
 
 		assertEquals(CounterImpl.getInstance(1, 1),
 				node.getLine(10).getInstructionCounter());
@@ -174,9 +177,9 @@ public class SourceNodeImplTest {
 		final SourceNodeImpl node = new SourceNodeImpl(ElementType.CLASS,
 				"Foo");
 		node.increment(CounterImpl.getInstance(mi1, ci1),
-				CounterImpl.COUNTER_0_0, 33);
+				CounterImpl.COUNTER_0_0, 33, TEST_METHOD);
 		node.increment(CounterImpl.getInstance(mi2, ci2),
-				CounterImpl.COUNTER_0_0, 33);
+				CounterImpl.COUNTER_0_0, 33, TEST_METHOD);
 		assertEquals(CounterImpl.getInstance(expectedMissedLines,
 				expectedCoveredLines), node.getLineCounter());
 		assertEquals(CounterImpl.getInstance(mi1 + mi2, ci1 + ci2),
@@ -212,7 +215,7 @@ public class SourceNodeImplTest {
 		final SourceNodeImpl child = new SourceNodeImpl(ElementType.CLASS,
 				"Foo");
 		child.increment(CounterImpl.getInstance(1, 11),
-				CounterImpl.getInstance(3, 33), 5);
+				CounterImpl.getInstance(3, 33), 5, TEST_METHOD);
 
 		node.increment(child);
 		node.increment(child);
